@@ -1,0 +1,127 @@
+<!-- Documentation on MouseRect -->
+<MouseRect>
+	<!-- All the mouse cursors to display -->
+	<IMCursorsInstances>
+		<!-- Cursors in Legacy mode -->
+		<IMDefault>
+			<!-- Cursor on the left side of the hitbox -->
+			<CursorLeft>#LEFTARROW_DEFAULT_IM#</CursorLeft>
+			<CursorRight>#RIGHTARROW_DEFAULT_IM#</CursorRight>
+			<CursorUp>#UPARROW_DEFAULT_IM#</CursorUp>
+			<CursorDown>#DOWNARROW_DEFAULT_IM#</CursorDown>
+			<!-- Cursor in the center of the hitbox -->
+			<CursorCenter>#CENTER_CURSOR_DEFAULT_IM#</CursorCenter>
+			<!-- Cursor on the entire hitbox, if none of the others are set -->
+			<Cursor>#CURSOR_DEFAULT_IM#</Cursor>
+			<!-- Radius of the hitbox center, used when there is a center cursor as well as side cursors. Units unknown -->
+			<CursorCenterRadius>#CENTER_RADIUS_DEFAULT_IM#</CursorCenterRadius>
+		</IMDefault>
+		<!-- Cursors in Lock mode -->
+		<IMDrag>
+			<CursorLeft>#LEFTARROW_DRAG_IM#</CursorLeft>
+			<CursorRight>#RIGHTARROW_DRAG_IM#</CursorRight>
+			<CursorUp>#UPARROW_DRAG_IM#</CursorUp>
+			<CursorDown>#DOWNARROW_DRAG_IM#</CursorDown>
+			<CursorCenter>#CENTER_CURSOR_DRAG_IM#</CursorCenter>
+			<Cursor>#CURSOR_DRAG_IM#</Cursor>
+			<CursorCenterRadius>#CENTER_RADIUS_DRAG_IM#</CursorCenterRadius>
+		</IMDrag>
+	</IMCursorsInstances>
+	<!-- Flags that determine when the appropriate callback code is run -->
+	<IMMouseFlagsInstances>
+		<!-- Mouse Events on which the legacy mode code will run -->
+		<IMDefault>#MOUSEFLAGS_DEFAULT_IM#</IMDefault>
+		<!-- Mouse Events on which the lock mode code will run -->
+		<IMDrag>#MOUSEFLAGS_DRAG_IM#</IMDrag>
+	</IMMouseFlagsInstances>
+	<!-- Tooltips -->
+	<IMTooltipsInstances>
+		<!-- Tooltips in legacy mode -->
+		<IMDefault>
+			<HelpID>#HELPID#</HelpID> <!-- Something, don't use it -->
+			<TooltipID>#TOOLTIPID#</TooltipID> <!-- Tooltip to show, can use the weird tooltip-specific formatting. Don't use this either -->
+			<!-- Animated tooltips, but also relates to cursors because Asobo. My knowledge about this is very shady -->
+			<Animated>
+				<!-- Animation ID to refer to for the things below (?). Is usually 0 -->
+				<AnimRefID>#ANIMREF_ID#</AnimRefID>
+				<!-- 
+					Not sure about this one:
+					Something to use for animating the cursor, probably what changes the cursor to the invalid icon when a switch reaches the end of its motion.
+					min: The minimum value for the animation, after which the cursor will become invalid
+					max: The maximum value for the animation, after which the cursor will become invalid
+					The ones above are set to -1 if the cursor should not be animated (like in a rotary switch). You could probably just not include this line as well.
+					dir: The direction in which the animation goes from left to right, or bottom to top (I think). If set to -1, it inverses the direction.
+					Essentially if this is 1, and the animation value is `min`, the left/bottom cursors will become invalid, and vice versa if the animation value is `max` or dir is -1.
+					You probably have to experiment on this.
+				-->
+				<AnimCursor min="#ANIMCURSOR_MIN#" max="#ANIMCURSOR_MAX#">#ANIMCURSOR_DIR#</AnimCursor>
+				<!-- If the animation tooltips should loop themselves -->
+				<AnimTooltipLoop>#ANIMTIP_LOOP#</AnimTooltipLoop>
+				<!--
+					One element for each animation-related tooltip you wish to have.
+					percent: The animation value at which this tooltip should appear.
+					cursor: The cursor at which this tooltip should appear. This is one of the cursors used in <IMCursorsInstances>.
+					hitbox: Asobo doesn't use this anywhere, so I have no idea.
+					value: The value of the animation tooltip, in the same format as TooltipID.
+				-->
+				<AnimTooltip percent="#ANIMTIP_ON_PERCENT#" cursor="#TOOLTIP_ON_CURSOR#" hitbox="#TOOLTIP_ON_HITBOX#">#ANIMTIP#</AnimTooltip>
+			</Animated>
+		</IMDefault>
+		<!-- Tooltips in lock mode -->
+		<IMDrag>
+			<TooltipEntries>
+				<!-- The tooltip title, which can use RPN to be as dynamic as you want -->
+				<TTTitle RPN="#TOOLTIP_TITLE_IS_DYNAMIC#">#TOOLTIP_TITLE#</TTTitle>
+				<!-- List of InputEvent presets to use to generate the fancy tooltip. They can be multiple, but I don't know how the sim chooses between them -->
+				<TooltipEntry ID="#TT_ID#" />
+			</TooltipEntries>
+		</IMDrag>
+	</IMTooltipsInstances>
+	<!-- If the MouseRect is disabled -->
+	<Disabled>#MOUSERECT_DISABLED#</Disabled>
+	<!-- In lock mode, can this MouseRect be locked, or interacted without locking -->
+	<Lock>#DRAG_IM_LOCK_ENABLED#</Lock>
+	<!-- The Mouse Event flags on which the control will be locked. This is *always* set to `LeftSingle` -->
+	<LockFlagsTemporary>#TEMPORARY_LOCK_FLAGS#</LockFlagsTemporary>
+	<!-- 
+		GLTF node to highlight when hovering over the MouseRect. Can be set to `__NO_HIGHLIGHT__` to disable highlighting, 
+		or omitted to highlight the node of the component this is placed on 
+	-->
+	<HighlightNodeId>#HIGHLIGHT_NODE_ID#</HighlightNodeId>
+	<!-- No idea, not used anywhere by Asobo -->
+	<GroupID>#INTERACTABLE_GROUP_ID#</GroupID>
+	<!-- The code to run that does all the magic of the MouseRect -->
+	<CallbackCode>
+		<IMCodeInstances>
+			<!-- The code to run in legacy mode. This is controlled by <IMMouseFlagsInstances> -->
+			<IMDefault>#CALLBACKCODE_DEFAULT_IM#</IMDefault>
+			<!-- The code to run in lock mode -->
+			<IMDrag>#CALLBACKCODE_DRAG_IM#</IMDrag>
+		</IMCodeInstances>
+		<!-- 
+			Mode to use when dragging: Default or Trajectory.
+			Default is simple, you're just going to get raw values in your callback code and can do whatever.
+			In trajectory mode, you can use (M:DragPercent) to get a value from 0 to 1 that tells you how far along the drag animation you are.
+			This lets you use a complex path, defined by the animation, to control your interaction.
+			It does not work for loops.
+		-->
+		<DragMode>#DRAG_MODE#</DragMode>
+		<!-- The animation name to use when using the `Trajectory` drag mode -->
+		<DragAnimName>#DRAG_ANIM_NAME#</DragAnimName>
+		<!-- The node affected by <DragAnimName> -->
+		<DragNodeId>#DRAG_NODE_ID#</DragNodeId>
+		<!-- If the animation referenced by <DragAnimName> should be synchronized with the drag -->
+		<DragAnimSynced>#DRAG_ANIM_SYNCED#</DragAnimSynced>
+		<!-- If the synchronization should use the animation lag given in the animation definition -->
+		<DragUseAnimLag>#DRAG_USE_ANIM_LAG#</DragUseAnimLag>
+		<!-- 
+			The axis you will use for calculations in the `Default` drag mode.
+			This can be X, Y, or Any.
+		-->
+		<DragAxis>#DRAG_AXIS#</DragAxis>
+		<!-- A scalar value that scales (M:RelativeX) and (M:RelativeY) -->
+		<DragScalar>#DRAG_SCALAR#</DragScalar>
+		<!-- Mouse Event flags for dragging while locked. Is *always* set to `LeftDrag+RightDrag+MiddleDrag` -->
+		<DragFlagsLockable>#DRAG_MOUSEFLAGS_LOCKABLE#</DragFlagsLockable>
+	</CallbackCode>
+</MouseRect>
