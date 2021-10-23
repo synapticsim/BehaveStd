@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ModelBehaviors>
+	<!--
+		An animation that is controlled by running some code.
+		This is slower than using `Beh_Animation_Var`, so use that if your animation depends only on a SimVar.
+	-->
+	<Template Name="Beh_Animation_Code">
+		<Parameters Type="Default">
+			<!-- The name of the animation in your GLTF file(s). -->
+			<Name/>
+			<!-- The code to run to get the target frame of the animation. -->
+			<Code/>
+			<!-- The scalar to divide the output of `Code` by. After dividing, the output value should be between 0 and 1. -->
+			<Length>100</Length>
+			<!--
+				The number of 'virtual frames' that can be played in one second.
+				The number of 'virtual frames' in the animation is equal to `Length`.
+				Essentially, this means that going from 0 to 1 in the animation will take `Length` / `Lag` seconds.
+				Between these two points, the simulator will linearly interpolate between your animation keyframes.
+			-->
+			<Lag>400</Lag>
+			<!-- Whether the animation should wrap around if the output value (after dividing) goes out of the range. -->
+			<Wrap>False</Wrap>
+		</Parameters>
+
+		<Animation Name="#Name#" Guid="" Length="#Length#" Type="Sim" TypeParam="AutoPlay">
+			<Parameter>
+				<Code>#Code#</Code>
+				<Lag>#Lag#</Lag>
+				<Wrap>#Wrap#</Wrap>
+			</Parameter>
+		</Animation>
+	</Template>
+
+	<!--
+		An animation that is controlled by a SimVar.
+	-->
+	<Template Name="Beh_Animation_Var">
+		<Parameters Type="Default">
+			<!-- The name of the animation in your GLTF file(s). -->
+			<Name/>
+			<!-- The variable that contains the target frame of the animation. -->
+			<Var/>
+			<!-- The unit of the SimVar. -->
+			<Unit/>
+			<!-- The value to scale the variable by. -->
+			<Scale>1</Scale>
+			<!-- The bias to add to the scaled variable. -->
+			<Bias>0</Bias>
+			<!-- The scalar to divide the output (Var * Scale + Bias) by. After dividing, the output value should be between 0 and 1. -->
+			<Length>100</Length>
+			<!--
+				The number of 'virtual frames' that can be played in one second.
+				The number of 'virtual frames' in the animation is equal to `Length`.
+				Essentially, this means that going from 0 to 1 in the animation will take `Length` / `Lag` seconds.
+				Between these two points, the simulator will linearly interpolate between your animation keyframes.
+			-->
+			<Lag>400</Lag>
+			<!-- Whether the animation should wrap around if the output value (after dividing) goes out of the range -->
+			<Wrap>False</Wrap>
+		</Parameters>
+
+		<Animation Name="#Name#" Guid="" Length="#Length#" Type="Sim" TypeParam="AutoPlay">
+			<Parameter>
+				<Sim>
+					<Variable>#Var#</Variable>
+					<Units>#Unit#</Units>
+					<Scale>#Scale#</Scale>
+					<Bias>#Bias#</Bias>
+				</Sim>
+				<Lag>#Lag#</Lag>
+				<Wrap>#Wrap#</Wrap>
+			</Parameter>
+		</Animation>
+	</Template>
+</ModelBehaviors>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ModelBehaviors>
+	<Include File="Animation.xml"/>
+	<Include File="Interaction.xml"/>
+
+	<Include File="Complex\Index.xml"/>
+</ModelBehaviors>

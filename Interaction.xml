@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ModelBehaviors>
+	<Include Path="Asobo\Generic\Interactions.xml"/>
+
+	<!--
+		An interaction that does nothing.
+		When hovered, it displays the text 'Inoperative'.
+	-->
+	<Template Name="Beh_Interaction_Inop">
+		<MouseRect>
+			<IMTooltipsInstances>
+				<IMDrag>
+					<TooltipEntries>
+						<TTTitle RPN="True">'Inoperative'</TTTitle>
+					</TooltipEntries>
+				</IMDrag>
+			</IMTooltipsInstances>
+			<Disabled>True</Disabled>
+			<CallbackCode>
+				<IMCodeInstances>
+					<IMDefault>0</IMDefault>
+					<IMDrag>0</IMDrag>
+				</IMCodeInstances>
+				<DragAnimName/>
+				<DragNodeId/>
+				<DragAnimSynced>True</DragAnimSynced>
+				<DragUseAnimLag>True</DragUseAnimLag>
+				<DragMode>Default</DragMode>
+				<DragAxis>Any</DragAxis>
+				<DragScalar>0</DragScalar>
+				<DragFlagsLockable>LeftDrag+RightDrag+MiddleDrag</DragFlagsLockable>
+			</CallbackCode>
+		</MouseRect>
+	</Template>
+
+	<!--
+		An interaction that responds by running some code when the node it is attached to is clicked.
+	-->
+	<Template Name="Beh_Interaction_Click">
+		<Parameters Type="Default">
+			<!-- RPN code to generate the title of the tooltip -->
+			<TooltipTitle/>
+			<!-- ID of the InputEvent preset to use to generate the tooltip in Lock mode. -->
+			<Tooltip/>
+			<!-- RPN code to run on click. -->
+			<OnClick/>
+			<!-- If highlighting the hovered GLTF node should be disabled. -->
+			<DisableHighlight>False</DisableHighlight>
+			<!--
+				The node to highlight if `DisableHighlight` is False.
+				If this is not set, the node of the component this is placed on is used.
+			-->
+			<HighlightNode/>
+		</Parameters>
+
+		<Parameters Type="Override">
+			<Condition Valid="DisableHighlight">
+				<True>
+					<NO_HIGHLIGHT_NODE_ID>True</NO_HIGHLIGHT_NODE_ID>
+				</True>
+				<False>
+					<Condition Check="HighlightNode">
+						<True>
+							<HIGHLIGHT_NODE_ID>#HighlightNode#</HIGHLIGHT_NODE_ID>
+						</True>
+						<False>
+							<HIGHLIGHT_NODE_ID/>
+						</False>
+					</Condition>
+				</False>
+			</Condition>
+		</Parameters>
+
+		<UseTemplate Name="ASOBO_GT_MouseRect">
+			<TOOLTIP_TITLE>#TooltipTitle#</TOOLTIP_TITLE>
+			<TOOLTIP_TITLE_IS_DYNAMIC>True</TOOLTIP_TITLE_IS_DYNAMIC>
+			<TOOLTIP_ENTRY_0>#Tooltip#</TOOLTIP_ENTRY_0>
+
+			<CURSOR>Hand</CURSOR>
+
+			<MOUSEFLAGS_DEFAULT_IM>LeftSingle</MOUSEFLAGS_DEFAULT_IM>
+			<MOUSEFLAGS_DRAG_IM>Lock</MOUSEFLAGS_DRAG_IM>
+			<DISABLE_INTERACTION_LOCK>True</DISABLE_INTERACTION_LOCK>
+
+			<CALLBACKCODE_DEFAULT_IM>#OnClick#</CALLBACKCODE_DEFAULT_IM>
+			<CALLBACKCODE_DRAG_IM>#OnClick#</CALLBACKCODE_DRAG_IM>
+		</UseTemplate>
+	</Template>
+
+	<!--
+		An interaction that acts as a switch with multiple states that do not wrap around.
+	-->
+	<Template Name="Beh_Interaction_Switch">
+		<Parameters Type="Default">
+			<!-- RPN code to generate the title of the tooltip -->
+			<TooltipTitle/>
+			<!--
+				ID of the InputEvent to use for the tooltip,
+				as well as setting the state of the switch:
+				Clockwise rotation/Moving to the right/Moving up -> Increment.
+				And vice versa.
+			-->
+			<InputEvent/>
+			<!--
+				The type of switch:
+				Rotary: The switch is a rotary switch.
+				Horizontal: The switch is a horizontal switch.
+				Vertical: The switch is a vertical switch.
+			-->
+			<Type/>
+			<!-- The amount along the drag axis for the switch to move one position in Lock mode. -->
+			<DragThreshold>0.1</DragThreshold>
+			<!-- If highlighting the hovered GLTF node should be disabled. -->
+			<DisableHighlight>False</DisableHighlight>
+			<!--
+				The node to highlight if DisableHighlight is False.
+				If this is not set, the node of the component this is placed on is used.
+			-->
+			<HighlightNode/>
+		</Parameters>
+
+		<Parameters Type="Default">
+			<LeftCursor/>
+			<RightCursor/>
+			<UpCursor/>
+			<DownCursor/>
+		</Parameters>
+
+		<Parameters Type="Override">
+			<Condition Check="Type" Match="Vertical">
+				<True>
+					<Axis>Y</Axis>
+				</True>
+				<False>
+					<Axis>X</Axis>
+				</False>
+			</Condition>
+			<Switch Param="Type">
+				<Case Value="Rotary">
+					<LeftCursor>TurnLeft</LeftCursor>
+					<RightCursor>TurnRight</RightCursor>
+				</Case>
+				<Case Value="Horizontal">
+					<LeftCursor>LeftArrow</LeftCursor>
+					<RightCursor>RightArrow</RightCursor>
+				</Case>
+				<Case Value="Vertical">
+					<UpCursor>UpArrow</UpCursor>
+					<DownCursor>DownArrow</DownCursor>
+				</Case>
+			</Switch>
+		</Parameters>
+
+		<UseTemplate Name="ASOBO_GT_MouseRect">
+			<TOOLTIP_TITLE>#TooltipTitle#</TOOLTIP_TITLE>
+			<TOOLTIP_TITLE_IS_DYNAMIC>True</TOOLTIP_TITLE_IS_DYNAMIC>
+			<TOOLTIP_ENTRY_0>#InputEvent#</TOOLTIP_ENTRY_0>
+
+			<LEFTARROW_DEFAULT_IM>#LeftCursor#</LEFTARROW_DEFAULT_IM>
+			<RIGHTARROW_DEFAULT_IM>#RightCursor#</RIGHTARROW_DEFAULT_IM>
+			<UPARROW_DEFAULT_IM>#UpCursor#</UPARROW_DEFAULT_IM>
+			<DOWNARROW_DEFAULT_IM>#DownCursor#</DOWNARROW_DEFAULT_IM>
+			<CURSOR_DRAG_IM>Grab</CURSOR_DRAG_IM>
+
+			<MOUSEFLAGS_DEFAULT_IM>LeftSingle+WheelUp+WheelDown</MOUSEFLAGS_DEFAULT_IM>
+			<MOUSEFLAGS_DRAG_IM>Lock+Unlock+LeftDrag+WheelUp+WheelDown</MOUSEFLAGS_DRAG_IM>
+			<DISABLE_INTERACTION_LOCK>False</DISABLE_INTERACTION_LOCK>
+
+			<ANIMREF_ID>0</ANIMREF_ID>
+			<ANIMCURSOR_MIN>0</ANIMCURSOR_MIN>
+			<ANIMCURSOR_MAX>1</ANIMCURSOR_MAX>
+
+			<CALLBACKCODE_DEFAULT_IM>
+				(M:Event) 'WheelUp' scmi 0 == if{
+					1 (&gt;B:#InputEvent#_Inc)
+					quit
+				}
+				(M:Event) 'WheelDown' scmi 0 == if{
+					1 (&gt;B:#InputEvent#_Dec)
+					quit
+				}
+				(M:Event) 'LeftSingle' scmi 0 == if{
+					(M:Relative#Axis#) 0 &gt; if{
+						1 (&gt;B:#InputEvent#_Inc)
+					} els{
+						1 (&gt;B:#InputEvent#_Dec)
+					}
+				}
+			</CALLBACKCODE_DEFAULT_IM>
+			<CALLBACKCODE_DRAG_IM>
+				(M:Event) 'WheelUp' scmi 0 == if{
+					1 (&gt;B:#InputEvent#_Inc)
+					quit
+				}
+				(M:Event) 'WheelDown' scmi 0 == if{
+					1 (&gt;B:#InputEvent#_Dec)
+					quit
+				}
+				(M:Event) 'Lock' scmi 0 == if{
+					(M:Relative#Axis#) (&gt;O:LastMousePosition)
+					1 (&gt;O:IsLocked, Bool)
+					quit
+				}
+				(M:Event) 'Unlock' scmi 0 == if{
+					0 (&gt;O:IsLocked, Bool)
+					quit
+				}
+				(M:Event) 'LeftDrag' scmi 0 == if{
+					(O:IsLocked, Bool) if{
+						(M:Relative#Axis#) (O:LastMousePosition) - sp0
+						l0 abs #DragThreshold# &gt; if{
+							l0 0 &gt; if{
+								1 (&gt;B:#InputEvent#_Inc)
+							} els{
+								1 (&gt;B:#InputEvent#_Dec)
+							}
+							(M:Relative#Axis#) (&gt;O:LastMousePosition)
+						}
+					}
+				}
+			</CALLBACKCODE_DRAG_IM>
+			<DRAG_AXIS>#Axis#</DRAG_AXIS>
+		</UseTemplate>
+	</Template>
+</ModelBehaviors>
