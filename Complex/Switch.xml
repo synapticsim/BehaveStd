@@ -135,11 +135,6 @@
 					<Node>#Name#</Node>
 				</False>
 			</Condition>
-			<Condition Valid="AnimName">
-				<False>
-					<AnimName>#Node#</AnimName>
-				</False>
-			</Condition>
 			<Length Process="Int">100 #Positions# 1 - *</Length>
 			<Lag Process="Int">100 #AnimTime# /</Lag>
 			<Condition Valid="InputEvent">
@@ -153,6 +148,14 @@
 				<False>
 					<InputEventName>Beh_SwitchEvent</InputEventName>
 					<InputEvent>#Name#</InputEvent>
+				</False>
+			</Condition>
+		</Parameters>
+
+		<Parameters Type="Override">
+			<Condition Valid="AnimName">
+				<False>
+					<AnimName>#Node#</AnimName>
 				</False>
 			</Condition>
 		</Parameters>
