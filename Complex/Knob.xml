@@ -1,38 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ModelBehaviors>
-	<InputEvent ID="Beh_SwitchEvent">
+	<InputEvent ID="Beh_KnobEvent">
 		<Presets>
 			<Preset ID="#Name#_Preset">
-				<Parameters Type="Override">
-					<Switch Param="Type">
-						<Case Value="Rotary">
-							<Icon>ROTATE</Icon>
-							<Interaction>X_AXIS</Interaction>
-							<InteractionLockable>X_AXIS</InteractionLockable>
-						</Case>
-						<Case Value="Horizontal">
-							<Icon>MOVE_X</Icon>
-							<Interaction>X_AXIS</Interaction>
-							<InteractionLockable>X_AXIS</InteractionLockable>
-						</Case>
-						<Case Value="Vertical">
-							<Icon>MOVE_Y</Icon>
-							<Interaction>Y_AXIS</Interaction>
-							<InteractionLockable>Y_AXIS</InteractionLockable>
-						</Case>
-					</Switch>
-				</Parameters>
-
 				<Tooltip>
-					<Icon>#Icon#</Icon>
-					<Interaction>#Interaction#</Interaction>
-					<InteractionLockable>#InteractionLockable#</InteractionLockable>
+					<Icon>ROTATE</Icon>
+					<Interaction>ROTATE</Interaction>
+					<InteractionLockable>X_AXIS</InteractionLockable>
 					<TTDescription RPN="True">#TooltipDescription#</TTDescription>
 					<TTValue RPN="True">#TooltipValue#</TTValue>
 				</Tooltip>
 				<Value>
-					<Init>#DefaultPosition# (&gt;O:SwitchPosition)</Init>
 					<Units>Enum</Units>
 					<Code>0</Code>
 				</Value>
@@ -58,8 +37,8 @@
 		</Presets>
 	</InputEvent>
 
-	<!-- A linear or rotary switch with a limited number of positions. -->
-	<Template Name="Beh_Switch">
+	<!-- A rotary knob that can rotate infinitely in both directions. -->
+	<Template Name="Beh_Knob">
 		<Parameters Type="Default">
 			<!-- The name of the component to create. -->
 			<Name/>
@@ -82,24 +61,12 @@
 			<TooltipDescription/>
 			<!-- RPN code to generate the tooltip's value. -->
 			<TooltipValue/>
-			<!--
-				Code to set the value of the switch's position.
-				Will be set with values in the range [0, `Positions`).
-				The value will be on the stack, and is expected to be popped.
-				0 -> leftmost/bottommost position.
-			-->
-			<OnChange/>
-			<!-- The number of positions of the switch. -->
+			<!-- The number of positions in one revolution. -->
 			<Positions/>
-			<!--
-				The type of switch:
-				Rotary: The switch is a rotary switch.
-				Horizontal: The switch is a horizontal switch.
-				Vertical: The switch is a vertical switch.
-			-->
-			<Type/>
-			<!-- The default position of the switch on startup. -->
-			<DefaultPosition>0</DefaultPosition>
+			<!-- The RPN code to run on one clockwise increment. -->
+			<OnIncrement/>
+			<!-- The RPN code to run on one anticlockwise decrement. -->
+			<OnDecrement/>
 			<!-- The time that moving from one position to another should take, in seconds. -->
 			<AnimTime>0.25</AnimTime>
 			<!-- If highlighting the hovered GLTF node should be disabled. -->
@@ -117,7 +84,6 @@
 					<Node>#Name#</Node>
 				</False>
 			</Condition>
-			<Max Process="Int">#Positions# 1 -</Max>
 			<Length Process="Int">100 #Positions# 1 - *</Length>
 			<Lag Process="Int">100 #AnimTime# /</Lag>
 			<Condition Valid="InputEvent">
@@ -136,16 +102,17 @@
 		</Parameters>
 
 		<Component ID="#Name#" Node="#Node#">
-			<UseInputEvent ID="Beh_SwitchEvent"/>
+			<UseInputEvent ID="Beh_KnobEvent"/>
 
 			<UseTemplate Name="Beh_Interaction_Switch">
-				<OnIncrement>(O:SwitchPosition) 1 + #Max# min d (&gt;O:SwitchPosition) #OnChange#</OnIncrement>
-				<OnDecrement>(O:SwitchPosition) 1 - 0 max d (&gt;O:SwitchPosition) #OnChange#</OnDecrement>
+				<OnIncrement>(O:SwitchPosition) 1 + (&gt;O:SwitchPosition) #OnIncrement#</OnIncrement>
+				<OnDecrement>(O:SwitchPosition) 1 - (&gt;O:SwitchPosition) #OnDecrement#</OnDecrement>
 			</UseTemplate>
 
 			<UseTemplate Name="Beh_Animation_Code">
 				<Name>#AnimName#</Name>
 				<Code>(O:SwitchPosition) 100 *</Code>
+				<Wrap>True</Wrap>
 			</UseTemplate>
 		</Component>
 	</Template>
