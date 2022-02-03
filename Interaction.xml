@@ -89,19 +89,18 @@
 	</Template>
 
 	<!--
-		An interaction that acts as a switch with multiple states that do not wrap around.
+		An interaction that acts as a switch with multiple states that may wrap around.
 	-->
 	<Template Name="Beh_Interaction_Switch">
 		<Parameters Type="Default">
 			<!-- RPN code to generate the title of the tooltip -->
 			<TooltipTitle/>
-			<!--
-				ID of the InputEvent to use for the tooltip,
-				as well as setting the state of the switch:
-				Clockwise rotation/Moving to the right/Moving up -> Increment.
-				And vice versa.
-			-->
-			<InputEvent/>
+			<!-- ID of the InputEvent to use for the tooltip. -->
+			<Tooltip/>
+			<!-- RPN code to run on increment (clockwise, right, or up). -->
+			<OnIncrement/>
+			<!-- RPN code to run on decrement (counter-clockwise, left, or down). -->
+			<OnDecrement/>
 			<!--
 				The type of switch:
 				Rotary: The switch is a rotary switch.
@@ -155,7 +154,7 @@
 		<UseTemplate Name="ASOBO_GT_MouseRect">
 			<TOOLTIP_TITLE>#TooltipTitle#</TOOLTIP_TITLE>
 			<TOOLTIP_TITLE_IS_DYNAMIC>True</TOOLTIP_TITLE_IS_DYNAMIC>
-			<TOOLTIP_ENTRY_0>#InputEvent#</TOOLTIP_ENTRY_0>
+			<TOOLTIP_ENTRY_0>#Tooltip#</TOOLTIP_ENTRY_0>
 
 			<LEFTARROW_DEFAULT_IM>#LeftCursor#</LEFTARROW_DEFAULT_IM>
 			<RIGHTARROW_DEFAULT_IM>#RightCursor#</RIGHTARROW_DEFAULT_IM>
@@ -173,28 +172,28 @@
 
 			<CALLBACKCODE_DEFAULT_IM>
 				(M:Event) 'WheelUp' scmi 0 == if{
-					1 (&gt;B:#InputEvent#_Inc)
+					#OnIncrement#
 					quit
 				}
 				(M:Event) 'WheelDown' scmi 0 == if{
-					1 (&gt;B:#InputEvent#_Dec)
+					#OnDecrement#
 					quit
 				}
 				(M:Event) 'LeftSingle' scmi 0 == if{
 					(M:Relative#Axis#) 0 &gt; if{
-						1 (&gt;B:#InputEvent#_Inc)
+						#OnIncrement#
 					} els{
-						1 (&gt;B:#InputEvent#_Dec)
+						#OnDecrement#
 					}
 				}
 			</CALLBACKCODE_DEFAULT_IM>
 			<CALLBACKCODE_DRAG_IM>
 				(M:Event) 'WheelUp' scmi 0 == if{
-					1 (&gt;B:#InputEvent#_Inc)
+					#OnIncrement#
 					quit
 				}
 				(M:Event) 'WheelDown' scmi 0 == if{
-					1 (&gt;B:#InputEvent#_Dec)
+					#OnDecrement#
 					quit
 				}
 				(M:Event) 'Lock' scmi 0 == if{
@@ -211,9 +210,9 @@
 						(M:Relative#Axis#) (O:LastMousePosition) - sp0
 						l0 abs #DragThreshold# &gt; if{
 							l0 0 &gt; if{
-								1 (&gt;B:#InputEvent#_Inc)
+								#OnIncrement#
 							} els{
-								1 (&gt;B:#InputEvent#_Dec)
+								#OnDecrement#
 							}
 							(M:Relative#Axis#) (&gt;O:LastMousePosition)
 						}

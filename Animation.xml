@@ -34,13 +34,13 @@
 	</Template>
 
 	<!--
-		An animation that is controlled by a SimVar.
+		An animation that is controlled by a SimVar. (Only A: vars are supported.)
 	-->
 	<Template Name="Beh_Animation_Var">
 		<Parameters Type="Default">
 			<!-- The name of the animation in your GLTF file(s). -->
 			<Name/>
-			<!-- The variable that contains the target frame of the animation. -->
+			<!-- The variable that contains the target frame of the animation (without the `A:` prefix). -->
 			<Var/>
 			<!-- The unit of the SimVar. -->
 			<Unit/>

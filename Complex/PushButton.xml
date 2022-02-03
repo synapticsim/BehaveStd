@@ -3,7 +3,7 @@
 <ModelBehaviors>
 	<InputEvent ID="Beh_PushEvent">
 		<Presets>
-			<Preset ID="#InputEvent#">
+			<Preset ID="#Name#_Preset">
 				<Tooltip>
 					<Icon>PUSH</Icon>
 					<Interaction>PRIMARY_DOWN</Interaction>
@@ -28,15 +28,10 @@
 					</Parameters>
 				</Dec>
 				<Set>
-					<Code>#OnPush#</Code>
+					<Code>0</Code>
 					<Parameters>
-						<Param Type="Float" RPN="True">p0</Param>
+						<Param Type="Float" RPN="True">0</Param>
 					</Parameters>
-					<Bindings>
-						<Binding Alias="#InputEvent#_Press">
-							<Param>0</Param>
-						</Binding>
-					</Bindings>
 				</Set>
 			</Preset>
 		</Presets>
@@ -60,18 +55,11 @@
 			<!-- RPN code to generate the title of the tooltip -->
 			<TooltipTitle/>
 			<!--
-				The InputEvent preset to use for the pushbutton.
-				The event should be named `#InputEvent#_Event` if `InputEventName` is not passed.
-				It can use any of the arguments that are passed to this template.
-				It must have a binding alias called `#InputEvent#_Press` that takes 0 parameters.
-				This will be called whenever the button is pushed.
-
-				If this is not given, `TooltipDescription`, `TooltipValue`, and `OnPush`
+				The InputEvent preset to use for the tooltip.
+				If this is not given, `TooltipDescription`, and `TooltipValue`
 				must be given so that the template can create an InputEvent.
 			-->
-			<InputEvent/>
-			<!-- The name of the InputEvent in which the preset is present. -->
-			<InputEventName/>
+			<Tooltip/>
 			<!-- RPN code to generate the tooltip's description. -->
 			<TooltipDescription/>
 			<!-- RPN code to generate the tooltip's value. -->
@@ -96,17 +84,9 @@
 				</False>
 			</Condition>
 			<Lag Process="Int">100 #AnimTime# /</Lag>
-			<Condition Valid="InputEvent">
-				<True>
-					<Condition Valid="InputEventName">
-						<False>
-							<InputEventName>#InputEvent#_Event</InputEventName>
-						</False>
-					</Condition>
-				</True>
+			<Condition Valid="Tooltip">
 				<False>
-					<InputEventName>Beh_PushEvent</InputEventName>
-					<InputEvent>#Name#</InputEvent>
+					<Tooltip>#Name#_Preset</Tooltip>
 				</False>
 			</Condition>
 		</Parameters>
@@ -120,14 +100,13 @@
 		</Parameters>
 
 		<Component ID="#Name#" Node="#Node#">
-			<UseInputEvent ID="#InputEventName#"/>
+			<UseInputEvent ID="Beh_PushEvent"/>
 
 			<UseTemplate Name="Beh_Interaction_Click">
 				<OnClick>
 					(O:AnimValue) ! (&gt;O:AnimValue)
-					(&gt;B:#InputEvent#_Press)
+					#OnPush#
 				</OnClick>
-				<Tooltip>#InputEvent#</Tooltip>
 			</UseTemplate>
 
 			<UseTemplate Name="Beh_Animation_Code">

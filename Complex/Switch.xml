@@ -3,9 +3,8 @@
 <ModelBehaviors>
 	<InputEvent ID="Beh_SwitchEvent">
 		<Presets>
-			<Preset ID="#InputEvent#">
+			<Preset ID="#Name#_Preset">
 				<Parameters Type="Override">
-					<Max Process="Int">#Positions# 1 -</Max>
 					<Switch Param="Type">
 						<Case Value="Rotary">
 							<Icon>ROTATE</Icon>
@@ -33,26 +32,26 @@
 					<TTValue RPN="True">#TooltipValue#</TTValue>
 				</Tooltip>
 				<Value>
-					<Init>#DefaultPosition# (&gt;B:#InputEvent#_Set)</Init>
+					<Init>#DefaultPosition# (&gt;O:SwitchPosition)</Init>
 					<Units>Enum</Units>
-					<Code>#Get#</Code>
+					<Code>0</Code>
 				</Value>
 				<Inc>
-					<Code>(B:#InputEvent#) p0 + #Max# min (&gt;B:#InputEvent#_Set)</Code>
+					<Code>0</Code>
 					<Parameters>
-						<Param Type="Int" RPN="True">1</Param>
+						<Param Type="Int" RPN="True">0</Param>
 					</Parameters>
 				</Inc>
 				<Dec>
-					<Code>(B:#InputEvent#) p0 - 0 max (&gt;B:#InputEvent#_Set)</Code>
+					<Code>0</Code>
 					<Parameters>
-						<Param Type="Int" RPN="True">1</Param>
+						<Param Type="Int" RPN="True">0</Param>
 					</Parameters>
 				</Dec>
 				<Set>
-					<Code>p0 #Set#</Code>
+					<Code>0</Code>
 					<Parameters>
-						<Param Type="Int" RPN="True">p0</Param>
+						<Param Type="Int" RPN="True">0</Param>
 					</Parameters>
 				</Set>
 			</Preset>
@@ -67,41 +66,23 @@
 			<Node/>
 			<!--
 				The name of the animation in your GLTF file(s).
-				The first keyframe should be in the 'out' position.
-				The middle keyframe should be in the 'in' position.
-				The last keyframe should be in the 'out' position.
-
 				If it is not given, `Node` will be used.
 			-->
 			<AnimName/>
 			<!-- RPN code to generate the title of the tooltip -->
 			<TooltipTitle/>
 			<!--
-				The InputEvent preset to use for the pushbutton.
-				The event should be named `#InputEvent#_Event` if `InputEventName` is not passed.
-				It can use any of the arguments that are passed to this template.
-				The increment and decrement events will be called when the switch is moved.
-				The InputEvent should ensure that the values do not go out of bounds.
-
-				If this is not given, `TooltipDescription`, `TooltipValue`, `Positions`, `Get`, `Set`,
-				and `DefaultPosition` must be given so that the template can create an InputEvent.
+				The InputEvent preset to use for the tooltip.
+				If this is not given, `TooltipDescription`, and `TooltipValue`
+				must be given so that the template can create an InputEvent.
 			-->
-			<InputEvent/>
-			<!-- The name of the InputEvent in which the preset is present. -->
-			<InputEventName/>
+			<Tooltip/>
 			<!-- RPN code to generate the tooltip's description. -->
 			<TooltipDescription/>
 			<!-- RPN code to generate the tooltip's value. -->
 			<TooltipValue/>
 			<!--
-				Code to get the value of the variable storing the switch's position.
-				Must output values in the range [0, `Positions`).
-				The value is expected to be pushed to the stack.
-				0 -> leftmost/bottommost position.
-			-->
-			<Get/>
-			<!--
-				Code to set the value of the variable storing the switch's position.
+				Code to set the value of the switch's position.
 				Will be set with values in the range [0, `Positions`).
 				The value will be on the stack, and is expected to be popped.
 				0 -> leftmost/bottommost position.
@@ -135,19 +116,13 @@
 					<Node>#Name#</Node>
 				</False>
 			</Condition>
+			<Max Process="Int">#Positions# 1 -</Max>
 			<Length Process="Int">100 #Positions# 1 - *</Length>
 			<Lag Process="Int">100 #AnimTime# /</Lag>
 			<Condition Valid="InputEvent">
-				<True>
-					<Condition Valid="InputEventName">
-						<False>
-							<InputEventName>#InputEvent#_Event</InputEventName>
-						</False>
-					</Condition>
-				</True>
 				<False>
 					<InputEventName>Beh_SwitchEvent</InputEventName>
-					<InputEvent>#Name#</InputEvent>
+					<InputEvent>#Name#_Preset</InputEvent>
 				</False>
 			</Condition>
 		</Parameters>
@@ -161,13 +136,16 @@
 		</Parameters>
 
 		<Component ID="#Name#" Node="#Node#">
-			<UseInputEvent ID="#InputEventName#"/>
+			<UseInputEvent ID="Beh_SwitchEvent"/>
 
-			<UseTemplate Name="Beh_Interaction_Switch"/>
+			<UseTemplate Name="Beh_Interaction_Switch">
+				<OnIncrement>(O:SwitchPosition) 1 + #Max# min d (&gt;O:SwitchPosition) #Se#</OnIncrement>
+				<OnDecrement>(O:SwitchPosition) 1 - 0 max d (&gt;O:SwitchPosition) #Set#</OnDecrement>
+			</UseTemplate>
 
 			<UseTemplate Name="Beh_Animation_Code">
 				<Name>#AnimName#</Name>
-				<Code>(B:#InputEvent#) 100 *</Code>
+				<Code>(O:SwitchPosition) 100 *</Code>
 			</UseTemplate>
 		</Component>
 	</Template>

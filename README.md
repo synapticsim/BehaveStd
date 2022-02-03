@@ -6,10 +6,10 @@ Everything here is documented in the code.
 
 ## Using
 
-Add this repository as a submodule, and include `Index.beh` into your project:
+Add this repository as a submodule, and include `Index.xml` into your project:
 
 ```xml
-<Include File="Path\\To\\Submodule\\Index.beh">
+<Include File="Path\\To\\Submodule\\Index.xml">
 ```
 
 ## Help
