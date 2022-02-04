@@ -6,7 +6,7 @@
 			<Preset ID="#Name#_Preset">
 				<Tooltip>
 					<Icon>ROTATE</Icon>
-					<Interaction>ROTATE</Interaction>
+					<Interaction>X_AXIS</Interaction>
 					<InteractionLockable>X_AXIS</InteractionLockable>
 					<TTDescription RPN="True">#TooltipDescription#</TTDescription>
 					<TTValue RPN="True">#TooltipValue#</TTValue>
