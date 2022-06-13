@@ -11,27 +11,50 @@
 					<TTDescription RPN="True">#TooltipDescription#</TTDescription>
 					<TTValue RPN="True">#TooltipValue#</TTValue>
 				</Tooltip>
-				<Value>
-					<Units>Bool</Units>
-					<Code>1</Code>
-				</Value>
 				<Inc>
 					<Code>0</Code>
 					<Parameters>
-						<Param Type="Float" RPN="True">0</Param>
+						<Param Type="Float">0</Param>
 					</Parameters>
 				</Inc>
 				<Dec>
 					<Code>0</Code>
 					<Parameters>
-						<Param Type="Float" RPN="True">0</Param>
+						<Param Type="Float">0</Param>
 					</Parameters>
 				</Dec>
 				<Set>
-					<Code>0</Code>
+					<Code>
+						p0 if{
+							(O:AnimValue) ! (&gt;O:AnimValue)
+							#OnPush#
+						}
+					</Code>
 					<Parameters>
-						<Param Type="Float" RPN="True">0</Param>
+						<Param Type="Bool" RPN="True">p0</Param>
 					</Parameters>
+					<Bindings>
+						<Loop>
+							<Setup>
+								<Param>ID</Param>
+								<From>0</From>
+								<Inc>1</Inc>
+								<While>
+									<Arg NotEmpty="Event#ID#"/>
+								</While>
+							</Setup>
+							<Do>
+								<Parameters Type="Override" Lifetime="Iteration">
+									<Event Process="Param">Event#ID#</Event>
+									<Check Process="Param">Check#ID#</Check>
+								</Parameters>
+
+								<Binding EventID="#Event#">
+									<Param RPN="True">#Check#</Param>
+								</Binding>
+							</Do>
+						</Loop>
+					</Bindings>
 				</Set>
 			</Preset>
 		</Presets>
@@ -54,12 +77,6 @@
 			<AnimName/>
 			<!-- RPN code to generate the title of the tooltip -->
 			<TooltipTitle/>
-			<!--
-				The InputEvent preset to use for the tooltip.
-				If this is not given, `TooltipDescription`, and `TooltipValue`
-				must be given so that the template can create an InputEvent.
-			-->
-			<Tooltip/>
 			<!-- RPN code to generate the tooltip's description. -->
 			<TooltipDescription/>
 			<!-- RPN code to generate the tooltip's value. -->
@@ -75,6 +92,13 @@
 				If this is not set, the node of the component this is placed on is used.
 			-->
 			<HighlightNode/>
+			<!--
+				Parameters `EventN` and `CheckN` are used to specify the key events to bind to.
+				N must start from 0.
+				`EventN`: The name of the event to bind to.
+				`CheckN`: Should return whether the button should be pushed when `EventN` is received.
+				          It can access the event parameters (`pN`).
+			-->
 		</Parameters>
 
 		<Parameters Type="Override">
@@ -104,8 +128,7 @@
 
 			<UseTemplate Name="Beh_Interaction_Click">
 				<OnClick>
-					(O:AnimValue) ! (&gt;O:AnimValue)
-					#OnPush#
+					1 (&gt;B:#Name#_Preset_Set)
 				</OnClick>
 			</UseTemplate>
 

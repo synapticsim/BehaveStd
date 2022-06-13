@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ModelBehaviors>
+    <Template Name="Beh_Inop">
+        <Parameters Type="Default">
+            <!-- The name of the component to create. -->
+            <Name/>
+            <!-- The GLTF node of the inoperative switch. If it is not given, `Name` will be used. -->
+            <Node/>
+            <!-- The tooltip title. -->
+            <TooltipTitle/>
+        </Parameters>
+
+        <Parameters Type="Override">
+            <Condition Valid="#Node#">
+                <False>
+                    <Node>#Name#</Node>
+                </False>
+            </Condition>
+        </Parameters>
+
+        <Component ID="#Name#" Node="#Node#">
+            <UseTemplate Name="Beh_Interaction_Inop"/>
+        </Component>
+    </Template>
+</ModelBehaviors>

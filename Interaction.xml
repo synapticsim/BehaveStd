@@ -3,35 +3,60 @@
 <ModelBehaviors>
 	<Include Path="Asobo\Generic\Interactions.xml"/>
 
+	<InputEvent ID="Beh_InopEvent">
+		<Presets>
+			<Preset ID="#Name#_Preset">
+				<Tooltip>
+					<Icon>Push</Icon>
+					<Interaction>PRIMARY_DOWN</Interaction>
+					<InteractionLockable>PRIMARY_DOWN</InteractionLockable>
+					<TTDescription>#Name#</TTDescription>
+					<TTValue>N/A</TTValue>
+				</Tooltip>
+				<Inc>
+					<Code>0</Code>
+					<Parameters>
+						<Param Type="Float">0</Param>
+					</Parameters>
+				</Inc>
+				<Dec>
+					<Code>0</Code>
+					<Parameters>
+						<Param Type="Float">0</Param>
+					</Parameters>
+				</Dec>
+				<Set>
+					<Code>0</Code>
+					<Parameters>
+						<Param Type="Float">0</Param>
+					</Parameters>
+				</Set>
+			</Preset>
+		</Presets>
+	</InputEvent>
+
 	<!--
 		An interaction that does nothing.
 		When hovered, it displays the text 'Inoperative'.
 	-->
 	<Template Name="Beh_Interaction_Inop">
-		<MouseRect>
-			<IMTooltipsInstances>
-				<IMDrag>
-					<TooltipEntries>
-						<TTTitle RPN="True">'Inoperative'</TTTitle>
-					</TooltipEntries>
-				</IMDrag>
-			</IMTooltipsInstances>
-			<Disabled>True</Disabled>
-			<CallbackCode>
-				<IMCodeInstances>
-					<IMDefault>0</IMDefault>
-					<IMDrag>0</IMDrag>
-				</IMCodeInstances>
-				<DragAnimName/>
-				<DragNodeId/>
-				<DragAnimSynced>True</DragAnimSynced>
-				<DragUseAnimLag>True</DragUseAnimLag>
-				<DragMode>Default</DragMode>
-				<DragAxis>Any</DragAxis>
-				<DragScalar>0</DragScalar>
-				<DragFlagsLockable>LeftDrag+RightDrag+MiddleDrag</DragFlagsLockable>
-			</CallbackCode>
-		</MouseRect>
+		<Parameters Type="Default">
+			<!-- The name of the component. -->
+			<Name/>
+			<!-- The tooltip title. -->
+			<TooltipTitle/>
+		</Parameters>
+
+		<UseInputEvent ID="Beh_InopEvent"/>
+
+		<UseTemplate Name="ASOBO_GT_MouseRect">
+			<TOOLTIP_TITLE>#TooltipTitle#</TOOLTIP_TITLE>
+			<TOOLTIP_ENTRY_0>#Name#_Preset</TOOLTIP_ENTRY_0>
+			<TOOLTIP_TITLE_IS_DYNAMIC>True</TOOLTIP_TITLE_IS_DYNAMIC>
+			<DISABLE_INTERACTION_LOCK>True</DISABLE_INTERACTION_LOCK>
+			<DISABLE_MOUSERECT>True</DISABLE_MOUSERECT>
+			<CALLBACKCODE>0</CALLBACKCODE>
+		</UseTemplate>
 	</Template>
 
 	<!--
@@ -83,8 +108,7 @@
 			<MOUSEFLAGS_DRAG_IM>Lock</MOUSEFLAGS_DRAG_IM>
 			<DISABLE_INTERACTION_LOCK>True</DISABLE_INTERACTION_LOCK>
 
-			<CALLBACKCODE_DEFAULT_IM>#OnClick#</CALLBACKCODE_DEFAULT_IM>
-			<CALLBACKCODE_DRAG_IM>#OnClick#</CALLBACKCODE_DRAG_IM>
+			<CALLBACKCODE>#OnClick#</CALLBACKCODE>
 		</UseTemplate>
 	</Template>
 
@@ -97,10 +121,10 @@
 			<TooltipTitle/>
 			<!-- ID of the InputEvent to use for the tooltip. -->
 			<Tooltip/>
-			<!-- RPN code to run on increment (clockwise, right, or up). -->
-			<OnIncrement/>
-			<!-- RPN code to run on decrement (counter-clockwise, left, or down). -->
-			<OnDecrement/>
+			<!-- RPN code to get the position value. -->
+			<GetPos/>
+			<!-- RPN code to set the position value (incremented if moved clockwise, right, or up). -->
+			<SetPos/>
 			<!--
 				The type of switch:
 				Rotary: The switch is a rotary switch.
@@ -108,6 +132,8 @@
 				Vertical: The switch is a vertical switch.
 			-->
 			<Type/>
+			<!-- The number of positions the switch has. -->
+			<Positions/>
 			<!-- The amount along the drag axis for the switch to move one position in Lock mode. -->
 			<DragThreshold>0.1</DragThreshold>
 			<!-- If highlighting the hovered GLTF node should be disabled. -->
@@ -119,13 +145,6 @@
 			<HighlightNode/>
 		</Parameters>
 
-		<Parameters Type="Default">
-			<LeftCursor/>
-			<RightCursor/>
-			<UpCursor/>
-			<DownCursor/>
-		</Parameters>
-
 		<Parameters Type="Override">
 			<Condition Check="Type" Match="Vertical">
 				<True>
@@ -135,6 +154,7 @@
 					<Axis>X</Axis>
 				</False>
 			</Condition>
+
 			<Switch Param="Type">
 				<Case Value="Rotary">
 					<LeftCursor>TurnLeft</LeftCursor>
@@ -151,6 +171,109 @@
 			</Switch>
 		</Parameters>
 
+		<Parameters Type="Override">
+			<Incr>#GetPos# 1 + #Positions# min #SetPos#</Incr>
+			<Decr>#GetPos# 1 - #Positions# max #SetPos#</Decr>
+		</Parameters>
+
+		<Parameters Type="Override">
+			<Condition Check="Positions" Match="2">
+				<True>
+					<LeftCursor/>
+					<RightCursor/>
+					<UpCursor/>
+					<DownCursor/>
+					<Cursor>Hand</Cursor>
+					<DragCursor>Hand</DragCursor>
+					<DragFlags>LeftSingle+WheelUp+WheelDown</DragFlags>
+					<Callback>
+						(M:Event) 'WheelUp' scmi 0 == if{
+							#Incr#
+							quit
+						}
+						(M:Event) 'WheelDown' scmi 0 == if{
+							#Decr#
+							quit
+						}
+						(M:Event) 'LeftSingle' scmi 0 == if{
+							#GetPos# ! #SetPos#
+						}
+					</Callback>
+					<DragCallback>
+						(M:Event) 'WheelUp' scmi 0 == if{
+							#Incr#
+							quit
+						}
+						(M:Event) 'WheelDown' scmi 0 == if{
+							#Decr#
+							quit
+						}
+						(M:Event) 'LeftSingle' scmi 0 == if{
+							#GetPos# ! #SetPos#
+						}
+					</DragCallback>
+				</True>
+				<False>
+					<LeftCursor>#LeftCursor#</LeftCursor>
+					<RightCursor>#RightCursor#</RightCursor>
+					<UpCursor>#UpCursor#</UpCursor>
+					<DownCursor>#DownCursor#</DownCursor>
+					<Cursor/>
+					<DragCursor>Grab</DragCursor>
+					<DragFlags>Lock+Unlock+LeftDrag+WheelUp+WheelDown</DragFlags>
+					<Callback>
+						(M:Event) 'WheelUp' scmi 0 == if{
+							#Incr#
+							quit
+						}
+						(M:Event) 'WheelDown' scmi 0 == if{
+							#Decr#
+							quit
+						}
+						(M:Event) 'LeftSingle' scmi 0 == if{
+							(M:Relative#Axis#) 0 &gt; if{
+								#Incr#
+							} els{
+								#Decr#
+							}
+						}
+					</Callback>
+					<DragCallback>
+						(M:Event) 'WheelUp' scmi 0 == if{
+							#Incr#
+							quit
+						}
+						(M:Event) 'WheelDown' scmi 0 == if{
+							#Decr#
+							quit
+						}
+						(M:Event) 'Lock' scmi 0 == if{
+							(M:Relative#Axis#) (&gt;O:LastMousePosition)
+							1 (&gt;O:IsLocked, Bool)
+							quit
+						}
+						(M:Event) 'Unlock' scmi 0 == if{
+							0 (&gt;O:IsLocked, Bool)
+							quit
+						}
+						(M:Event) 'LeftDrag' scmi 0 == if{
+							(O:IsLocked, Bool) if{
+								(M:Relative#Axis#) (O:LastMousePosition) - sp0
+								l0 abs #DragThreshold# &gt; if{
+									l0 0 &gt; if{
+										#Incr#
+									} els{
+										#Decr#
+									}
+									(M:Relative#Axis#) (&gt;O:LastMousePosition)
+								}
+							}
+						}
+					</DragCallback>
+				</False>
+			</Condition>
+		</Parameters>
+
 		<UseTemplate Name="ASOBO_GT_MouseRect">
 			<TOOLTIP_TITLE>#TooltipTitle#</TOOLTIP_TITLE>
 			<TOOLTIP_TITLE_IS_DYNAMIC>True</TOOLTIP_TITLE_IS_DYNAMIC>
@@ -160,65 +283,19 @@
 			<RIGHTARROW_DEFAULT_IM>#RightCursor#</RIGHTARROW_DEFAULT_IM>
 			<UPARROW_DEFAULT_IM>#UpCursor#</UPARROW_DEFAULT_IM>
 			<DOWNARROW_DEFAULT_IM>#DownCursor#</DOWNARROW_DEFAULT_IM>
-			<CURSOR_DRAG_IM>Grab</CURSOR_DRAG_IM>
+			<CURSOR_DEFAULT_IM>#Cursor#</CURSOR_DEFAULT_IM>
+			<CURSOR_DRAG_IM>#DragCursor#</CURSOR_DRAG_IM>
 
 			<MOUSEFLAGS_DEFAULT_IM>LeftSingle+WheelUp+WheelDown</MOUSEFLAGS_DEFAULT_IM>
-			<MOUSEFLAGS_DRAG_IM>Lock+Unlock+LeftDrag+WheelUp+WheelDown</MOUSEFLAGS_DRAG_IM>
+			<MOUSEFLAGS_DRAG_IM>#DragFlags#</MOUSEFLAGS_DRAG_IM>
 			<DISABLE_INTERACTION_LOCK>False</DISABLE_INTERACTION_LOCK>
 
 			<ANIMREF_ID>0</ANIMREF_ID>
 			<ANIMCURSOR_MIN>0</ANIMCURSOR_MIN>
 			<ANIMCURSOR_MAX>1</ANIMCURSOR_MAX>
 
-			<CALLBACKCODE_DEFAULT_IM>
-				(M:Event) 'WheelUp' scmi 0 == if{
-					#OnIncrement#
-					quit
-				}
-				(M:Event) 'WheelDown' scmi 0 == if{
-					#OnDecrement#
-					quit
-				}
-				(M:Event) 'LeftSingle' scmi 0 == if{
-					(M:Relative#Axis#) 0 &gt; if{
-						#OnIncrement#
-					} els{
-						#OnDecrement#
-					}
-				}
-			</CALLBACKCODE_DEFAULT_IM>
-			<CALLBACKCODE_DRAG_IM>
-				(M:Event) 'WheelUp' scmi 0 == if{
-					#OnIncrement#
-					quit
-				}
-				(M:Event) 'WheelDown' scmi 0 == if{
-					#OnDecrement#
-					quit
-				}
-				(M:Event) 'Lock' scmi 0 == if{
-					(M:Relative#Axis#) (&gt;O:LastMousePosition)
-					1 (&gt;O:IsLocked, Bool)
-					quit
-				}
-				(M:Event) 'Unlock' scmi 0 == if{
-					0 (&gt;O:IsLocked, Bool)
-					quit
-				}
-				(M:Event) 'LeftDrag' scmi 0 == if{
-					(O:IsLocked, Bool) if{
-						(M:Relative#Axis#) (O:LastMousePosition) - sp0
-						l0 abs #DragThreshold# &gt; if{
-							l0 0 &gt; if{
-								#OnIncrement#
-							} els{
-								#OnDecrement#
-							}
-							(M:Relative#Axis#) (&gt;O:LastMousePosition)
-						}
-					}
-				}
-			</CALLBACKCODE_DRAG_IM>
+			<CALLBACKCODE_DEFAULT_IM>#Callback#</CALLBACKCODE_DEFAULT_IM>
+			<CALLBACKCODE_DRAG_IM>#DragCallback#</CALLBACKCODE_DRAG_IM>
 			<DRAG_AXIS>#Axis#</DRAG_AXIS>
 		</UseTemplate>
 	</Template>

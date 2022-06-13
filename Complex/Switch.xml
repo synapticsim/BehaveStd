@@ -32,7 +32,7 @@
 					<TTValue RPN="True">#TooltipValue#</TTValue>
 				</Tooltip>
 				<Value>
-					<Init>#DefaultPosition# (&gt;O:SwitchPosition)</Init>
+					<Init>#DefaultPosition# d (&gt;O:SwitchPosition) #OnChange#</Init>
 					<Units>Enum</Units>
 					<Code>0</Code>
 				</Value>
@@ -49,10 +49,32 @@
 					</Parameters>
 				</Dec>
 				<Set>
-					<Code>0</Code>
+					<Code>p0 d (&gt;O:SwitchPosition) #OnChange#</Code>
 					<Parameters>
-						<Param Type="Int" RPN="True">0</Param>
+						<Param Type="Int" RPN="True">p0</Param>
 					</Parameters>
+					<Bindings>
+						<Loop>
+							<Setup>
+								<Param>ID</Param>
+								<From>0</From>
+								<Inc>1</Inc>
+								<While>
+									<Arg NotEmpty="Event#ID#"/>
+								</While>
+							</Setup>
+							<Do>
+								<Parameters Type="Override" Lifetime="Iteration">
+									<Event Process="Param">Event#ID#</Event>
+									<Set Process="Param">Set#ID#</Set>
+								</Parameters>
+
+								<Binding EventID="#Event#">
+									<Param RPN="True">#Set#</Param>
+								</Binding>
+							</Do>
+						</Loop>
+					</Bindings>
 				</Set>
 			</Preset>
 		</Presets>
@@ -72,12 +94,6 @@
 			<AnimName/>
 			<!-- RPN code to generate the title of the tooltip -->
 			<TooltipTitle/>
-			<!--
-				The InputEvent preset to use for the tooltip.
-				If this is not given, `TooltipDescription`, and `TooltipValue`
-				must be given so that the template can create an InputEvent.
-			-->
-			<Tooltip/>
 			<!-- RPN code to generate the tooltip's description. -->
 			<TooltipDescription/>
 			<!-- RPN code to generate the tooltip's value. -->
@@ -109,6 +125,13 @@
 				If this is not set, the node of the component this is placed on is used.
 			-->
 			<HighlightNode/>
+			<!--
+				Parameters `EventN` and `CheckN` are used to specify the key events to bind to.
+				N must start from 0.
+				`EventN`: The name of the event to bind to.
+				`SetN`: Should return the switch position to set when `EventN` is received.
+				          It can access the event parameters (`pN`).
+			-->
 		</Parameters>
 
 		<Parameters Type="Override">

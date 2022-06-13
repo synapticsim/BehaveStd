@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ModelBehaviors>
+	<Include File="Inop.xml"/>
 	<Include File="Knob.xml"/>
 	<Include File="PushButton.xml"/>
 	<Include File="Switch.xml"/>
