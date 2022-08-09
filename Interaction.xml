@@ -109,6 +109,7 @@
 			<DISABLE_INTERACTION_LOCK>True</DISABLE_INTERACTION_LOCK>
 
 			<CALLBACKCODE>#OnClick#</CALLBACKCODE>
+			<CALLBACKCODE_DRAG_IM>#OnClick#</CALLBACKCODE_DRAG_IM>
 		</UseTemplate>
 	</Template>
 
@@ -134,6 +135,8 @@
 			<Type/>
 			<!-- The number of positions the switch has. -->
 			<Positions/>
+			<!-- If the switch should wrap around. -->
+			<Wrap>False</Wrap>
 			<!-- The amount along the drag axis for the switch to move one position in Lock mode. -->
 			<DragThreshold>0.1</DragThreshold>
 			<!-- If highlighting the hovered GLTF node should be disabled. -->
@@ -146,6 +149,8 @@
 		</Parameters>
 
 		<Parameters Type="Override">
+			<Max Process="Int">#Positions# 1 -</Max>
+
 			<Condition Check="Type" Match="Vertical">
 				<True>
 					<Axis>Y</Axis>
@@ -172,8 +177,21 @@
 		</Parameters>
 
 		<Parameters Type="Override">
-			<Incr>#GetPos# 1 + #Positions# min #SetPos#</Incr>
-			<Decr>#GetPos# 1 - #Positions# max #SetPos#</Decr>
+			<Condition Check="Wrap" Match="True">
+				<True>
+					<IncOp>#Positions# %</IncOp>
+					<DecOp>d -1 == if{ p #Max# }</DecOp>
+				</True>
+				<False>
+					<IncOp>#Max# min</IncOp>
+					<DecOp>0 max</DecOp>
+				</False>
+			</Condition>
+		</Parameters>
+
+		<Parameters Type="Override">
+			<Incr>#GetPos# 1 + #IncOp# #SetPos#</Incr>
+			<Decr>#GetPos# 1 - #DecOp# #SetPos#</Decr>
 		</Parameters>
 
 		<Parameters Type="Override">

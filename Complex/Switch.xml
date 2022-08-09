@@ -34,7 +34,7 @@
 				<Value>
 					<Init>#DefaultPosition# d (&gt;O:SwitchPosition) #OnChange#</Init>
 					<Units>Enum</Units>
-					<Code>0</Code>
+					<Code>(O:SwitchPosition)</Code>
 				</Value>
 				<Inc>
 					<Code>0</Code>
@@ -116,6 +116,8 @@
 			<Type/>
 			<!-- The default position of the switch on startup. -->
 			<DefaultPosition>0</DefaultPosition>
+			<!-- If the switch should wrap around. -->
+			<Wrap>False</Wrap>
 			<!-- The time that moving from one position to another should take, in seconds. -->
 			<AnimTime>0.25</AnimTime>
 			<!-- If highlighting the hovered GLTF node should be disabled. -->
@@ -140,17 +142,10 @@
 					<Node>#Name#</Node>
 				</False>
 			</Condition>
-			<Max Process="Int">#Positions# 1 -</Max>
+
 			<Length Process="Int">100 #Positions# 1 - *</Length>
 			<Lag Process="Int">100 #AnimTime# /</Lag>
-			<Condition Valid="InputEvent">
-				<False>
-					<InputEvent>#Name#_Preset</InputEvent>
-				</False>
-			</Condition>
-		</Parameters>
 
-		<Parameters Type="Override">
 			<Condition Valid="AnimName">
 				<False>
 					<AnimName>#Node#</AnimName>
@@ -162,13 +157,13 @@
 			<UseInputEvent ID="Beh_SwitchEvent"/>
 
 			<UseTemplate Name="Beh_Interaction_Switch">
-				<OnIncrement>(O:SwitchPosition) 1 + #Max# min d (&gt;O:SwitchPosition) #OnChange#</OnIncrement>
-				<OnDecrement>(O:SwitchPosition) 1 - 0 max d (&gt;O:SwitchPosition) #OnChange#</OnDecrement>
+				<GetPos>(B:#Name#_Preset)</GetPos>
+				<SetPos>(&gt;B:#Name#_Preset_Set)</SetPos>
 			</UseTemplate>
 
 			<UseTemplate Name="Beh_Animation_Code">
 				<Name>#AnimName#</Name>
-				<Code>(O:SwitchPosition) 100 *</Code>
+				<Code>(B:#Name#_Preset) 100 *</Code>
 			</UseTemplate>
 		</Component>
 	</Template>

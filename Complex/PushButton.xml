@@ -11,6 +11,10 @@
 					<TTDescription RPN="True">#TooltipDescription#</TTDescription>
 					<TTValue RPN="True">#TooltipValue#</TTValue>
 				</Tooltip>
+				<Value>
+					<Units>Bool</Units>
+					<Code>0</Code>
+				</Value>
 				<Inc>
 					<Code>0</Code>
 					<Parameters>
