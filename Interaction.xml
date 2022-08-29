@@ -164,14 +164,20 @@
 				<Case Value="Rotary">
 					<LeftCursor>TurnLeft</LeftCursor>
 					<RightCursor>TurnRight</RightCursor>
+					<UpCursor/>
+					<DownCursor/>
 				</Case>
 				<Case Value="Horizontal">
 					<LeftCursor>LeftArrow</LeftCursor>
 					<RightCursor>RightArrow</RightCursor>
+					<UpCursor/>
+					<DownCursor/>
 				</Case>
 				<Case Value="Vertical">
 					<UpCursor>UpArrow</UpCursor>
 					<DownCursor>DownArrow</DownCursor>
+					<LeftCursor/>
+					<RightCursor/>
 				</Case>
 			</Switch>
 		</Parameters>

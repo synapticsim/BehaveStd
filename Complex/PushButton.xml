@@ -14,6 +14,7 @@
 				<Value>
 					<Units>Bool</Units>
 					<Code>0</Code>
+					<Init>#Init#</Init>
 				</Value>
 				<Inc>
 					<Code>0</Code>
@@ -87,6 +88,8 @@
 			<TooltipValue/>
 			<!-- RPN code to run on push. -->
 			<OnPush/>
+			<!-- The initial value. -->
+			<Init>0</Init>
 			<!-- The time that the entire animation (in and out) should take, in seconds. -->
 			<AnimTime>0.25</AnimTime>
 			<!-- If highlighting the hovered GLTF node should be disabled. -->
