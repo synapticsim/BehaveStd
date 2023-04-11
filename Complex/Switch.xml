@@ -142,7 +142,9 @@
 					<Node>#Name#</Node>
 				</False>
 			</Condition>
+		</Parameters>
 
+		<Parameters Type="Override">
 			<Length Process="Int">100 #Positions# 1 - *</Length>
 			<Lag Process="Int">100 #AnimTime# /</Lag>
 
