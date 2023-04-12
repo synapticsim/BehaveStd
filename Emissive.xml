@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ModelBehaviors>
+    <Template Name="Beh_Emissive">
+        <Parameters Type="Default">
+            <!-- The name of the component to create. -->
+            <Name/>
+            <!-- The GLTF node of the object to control. If it is not given, `Name` will be used. -->
+            <Node/>
+            <!-- RPN code that will determine the strength of the emissive glow. -->
+            <Value/>
+        </Parameters>
+
+        <Parameters Type="Override">
+            <Condition Valid="Node">
+                <False>
+                    <Node>#Name#</Node>
+                </False>
+            </Condition>
+        </Parameters>
+
+        <Component ID="#Name#" Node="#Node#">
+            <Material>
+                <EmissiveFactor>
+                    <Parameter>
+                        <Code>#Value#</Code>
+                    </Parameter>
+                    <OverrideBaseEmissive>True</OverrideBaseEmissive>
+                </EmissiveFactor>
+            </Material>
+        </Component>
+    </Template>
+</ModelBehaviors>

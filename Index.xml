@@ -2,6 +2,7 @@
 
 <ModelBehaviors>
 	<Include File="Animation.xml"/>
+	<Include File="Emissive.xml"/>
 	<Include File="Interaction.xml"/>
 
 	<Include File="Complex\Index.xml"/>

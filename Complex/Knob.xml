@@ -50,7 +50,7 @@
 			-->
 			<AnimName/>
 			<!-- RPN code to generate the title of the tooltip -->
-			<TooltipTitle/>
+			<TooltipTitle>'INOP'</TooltipTitle>
 			<!--
 				The InputEvent preset to use for the tooltip.
 				If this is not given, `TooltipDescription`, and `TooltipValue`
@@ -58,9 +58,9 @@
 			-->
 			<Tooltip/>
 			<!-- RPN code to generate the tooltip's description. -->
-			<TooltipDescription/>
+			<TooltipDescription>'Inoperative'</TooltipDescription>
 			<!-- RPN code to generate the tooltip's value. -->
-			<TooltipValue/>
+			<TooltipValue>N/A</TooltipValue>
 			<!-- The number of positions in one revolution. -->
 			<Positions/>
 			<!-- The RPN code to run on one clockwise increment. -->

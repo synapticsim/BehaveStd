@@ -93,11 +93,11 @@
 			-->
 			<AnimName/>
 			<!-- RPN code to generate the title of the tooltip -->
-			<TooltipTitle/>
+			<TooltipTitle>'INOP'</TooltipTitle>
 			<!-- RPN code to generate the tooltip's description. -->
-			<TooltipDescription/>
+			<TooltipDescription>'Inoperative'</TooltipDescription>
 			<!-- RPN code to generate the tooltip's value. -->
-			<TooltipValue/>
+			<TooltipValue>'N/A'</TooltipValue>
 			<!--
 				Code to set the value of the switch's position.
 				Will be set with values in the range [0, `Positions`).

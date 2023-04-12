@@ -81,11 +81,11 @@
 			-->
 			<AnimName/>
 			<!-- RPN code to generate the title of the tooltip -->
-			<TooltipTitle/>
+			<TooltipTitle>'INOP'</TooltipTitle>
 			<!-- RPN code to generate the tooltip's description. -->
-			<TooltipDescription/>
+			<TooltipDescription>'Inoperative'</TooltipDescription>
 			<!-- RPN code to generate the tooltip's value. -->
-			<TooltipValue/>
+			<TooltipValue>'N/A'</TooltipValue>
 			<!-- RPN code to run on push. -->
 			<OnPush/>
 			<!-- The initial value. -->
