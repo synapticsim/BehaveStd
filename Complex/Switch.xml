@@ -92,6 +92,11 @@
 				If it is not given, `Node` will be used.
 			-->
 			<AnimName/>
+			<!--
+				The name of the Wwise sound event to use.
+				If it is not given, `Node` will be used.
+			-->
+			<SoundEvent/>
 			<!-- RPN code to generate the title of the tooltip -->
 			<TooltipTitle>'INOP'</TooltipTitle>
 			<!-- RPN code to generate the tooltip's description. -->
@@ -146,11 +151,17 @@
 
 		<Parameters Type="Override">
 			<Length Process="Int">100 #Positions# 1 - *</Length>
+			<Intervals Process="Int"> #Positions# 1 -</Intervals>
 			<Lag Process="Int">100 #AnimTime# /</Lag>
 
 			<Condition Valid="AnimName">
 				<False>
 					<AnimName>#Node#</AnimName>
+				</False>
+			</Condition>
+			<Condition Valid="SoundEvent">
+				<False>
+					<SoundEvent>#Node#</SoundEvent>
 				</False>
 			</Condition>
 		</Parameters>
@@ -167,6 +178,12 @@
 				<Name>#AnimName#</Name>
 				<Code>(B:#Name#_Preset) 100 *</Code>
 			</UseTemplate>
+
+			<AnimationTriggers Animation="#AnimName#">
+				<EventTrigger Count="#Intervals#" Direction="Both">
+					<SoundEvent WwiseEvent="#SoundEvent#" Action="Play"/>
+				</EventTrigger>
+			</AnimationTriggers>
 		</Component>
 	</Template>
 </ModelBehaviors>

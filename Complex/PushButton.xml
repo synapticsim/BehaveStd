@@ -80,6 +80,10 @@
 				If it is not given, `Node` will be used.
 			-->
 			<AnimName/>
+			<!-- The name of the Wwise sound event to use on push in. -->
+			<SoundEventIn/>
+			<!-- The name of the Wwise sound event to use on push out. -->
+			<SoundEventOut/>
 			<!-- RPN code to generate the title of the tooltip -->
 			<TooltipTitle>'INOP'</TooltipTitle>
 			<!-- RPN code to generate the tooltip's description. -->
@@ -144,6 +148,15 @@
 				<Code>(O:AnimValue) 100 *</Code>
 				<Length>100</Length>
 			</UseTemplate>
+
+			<AnimationTriggers Animation="#AnimName#">
+				<EventTrigger Count="1" Direction="Forward">
+					<SoundEvent WwiseEvent="#SoundEventIn#" Action="Play"/>
+				</EventTrigger>
+				<EventTrigger Count="1" Direction="Backward">
+					<SoundEvent WwiseEvent="#SoundEventOut#" Action="Play"/>
+				</EventTrigger>
+			</AnimationTriggers>
 		</Component>
 	</Template>
 </ModelBehaviors>
