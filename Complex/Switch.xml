@@ -150,8 +150,18 @@
 		</Parameters>
 
 		<Parameters Type="Override">
-			<Length Process="Int">100 #Positions# 1 - *</Length>
-			<Intervals Process="Int"> #Positions# 1 -</Intervals>
+			<Condition Check="Wrap" Match="True">
+				<True>
+					<Length Process="Int">100 #Positions# *</Length>
+					<Intervals Process="Int"> #Positions#</Intervals>
+				</True>
+				<False>
+					<Length Process="Int">100 #Positions# 1 - *</Length>
+					<Intervals Process="Int"> #Positions# 1 -</Intervals>
+				</False>
+			</Condition>
+
+
 			<Lag Process="Int">100 #AnimTime# /</Lag>
 
 			<Condition Valid="AnimName">

@@ -84,7 +84,7 @@
 					<Node>#Name#</Node>
 				</False>
 			</Condition>
-			<Length Process="Int">100 #Positions# 1 - *</Length>
+			<Length Process="Int">100 #Positions# *</Length>
 			<Lag Process="Int">100 #AnimTime# /</Lag>
 			<Condition Valid="InputEvent">
 				<False>
@@ -104,7 +104,7 @@
 		<Component ID="#Name#" Node="#Node#">
 			<UseInputEvent ID="Beh_KnobEvent"/>
 
-			<UseTemplate Name="Beh_Interaction_Switch">
+			<UseTemplate Name="Beh_Interaction_DiscreteKnob">
 				<OnIncrement>(O:SwitchPosition) 1 + (&gt;O:SwitchPosition) #OnIncrement#</OnIncrement>
 				<OnDecrement>(O:SwitchPosition) 1 - (&gt;O:SwitchPosition) #OnDecrement#</OnDecrement>
 			</UseTemplate>

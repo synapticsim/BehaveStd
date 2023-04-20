@@ -323,4 +323,111 @@
 			<DRAG_AXIS>#Axis#</DRAG_AXIS>
 		</UseTemplate>
 	</Template>
+
+	<!--
+		An interaction that acts as a discrete knob that spins forever.
+	-->
+	<Template Name="Beh_Interaction_DiscreteKnob">
+		<Parameters Type="Default">
+			<!-- RPN code to generate the title of the tooltip -->
+			<TooltipTitle/>
+			<!-- ID of the InputEvent to use for the tooltip. -->
+			<Tooltip/>
+			<!-- RPN code to run on increment. -->
+			<OnIncrement/>
+			<!-- RPN code to run on decrement. -->
+			<OnDecrement/>
+			<!-- The amount along the drag axis for the switch to move one position in Lock mode. -->
+			<DragThreshold>0.1</DragThreshold>
+			<!-- If highlighting the hovered GLTF node should be disabled. -->
+			<DisableHighlight>False</DisableHighlight>
+			<!--
+				The node to highlight if DisableHighlight is False.
+				If this is not set, the node of the component this is placed on is used.
+			-->
+			<HighlightNode/>
+		</Parameters>
+
+		<Parameters Type="Override">
+			<Axis>X</Axis>
+			<LeftCursor>TurnLeft</LeftCursor>
+			<RightCursor>TurnRight</RightCursor>
+			<DragCursor>Grab</DragCursor>
+			<DragFlags>Lock+Unlock+LeftDrag+WheelUp+WheelDown</DragFlags>
+			<Callback>
+				(M:Event) 'WheelUp' scmi 0 == if{
+					#OnIncrement#
+					quit
+				}
+				(M:Event) 'WheelDown' scmi 0 == if{
+					#OnDecrement#
+					quit
+				}
+				(M:Event) 'LeftSingle' scmi 0 == if{
+					(M:Relative#Axis#) 0 &gt; if{
+						#OnIncrement#
+					} els{
+						#OnDecrement#
+					}
+				}
+			</Callback>
+			<DragCallback>
+				(M:Event) 'WheelUp' scmi 0 == if{
+					#OnIncrement#
+					quit
+				}
+				(M:Event) 'WheelDown' scmi 0 == if{
+					#OnDecrement#
+					quit
+				}
+				(M:Event) 'Lock' scmi 0 == if{
+					(M:Relative#Axis#) (&gt;O:LastMousePosition)
+					1 (&gt;O:IsLocked, Bool)
+					quit
+				}
+				(M:Event) 'Unlock' scmi 0 == if{
+					0 (&gt;O:IsLocked, Bool)
+					quit
+				}
+				(M:Event) 'LeftDrag' scmi 0 == if{
+					(O:IsLocked, Bool) if{
+						(M:Relative#Axis#) (O:LastMousePosition) - sp0
+						l0 abs #DragThreshold# &gt; if{
+							l0 0 &gt; if{
+								#OnIncrement#
+							} els{
+								#OnDecrement#
+							}
+							(M:Relative#Axis#) (&gt;O:LastMousePosition)
+						}
+					}
+				}
+			</DragCallback>
+		</Parameters>
+
+		<UseTemplate Name="ASOBO_GT_MouseRect">
+			<TOOLTIP_TITLE>#TooltipTitle#</TOOLTIP_TITLE>
+			<TOOLTIP_TITLE_IS_DYNAMIC>True</TOOLTIP_TITLE_IS_DYNAMIC>
+			<TOOLTIP_ENTRY_0>#Tooltip#</TOOLTIP_ENTRY_0>
+
+			<LEFTARROW_DEFAULT_IM>#LeftCursor#</LEFTARROW_DEFAULT_IM>
+			<RIGHTARROW_DEFAULT_IM>#RightCursor#</RIGHTARROW_DEFAULT_IM>
+			<UPARROW_DEFAULT_IM>#UpCursor#</UPARROW_DEFAULT_IM>
+			<DOWNARROW_DEFAULT_IM>#DownCursor#</DOWNARROW_DEFAULT_IM>
+			<CURSOR_DEFAULT_IM>#Cursor#</CURSOR_DEFAULT_IM>
+			<CURSOR_DRAG_IM>#DragCursor#</CURSOR_DRAG_IM>
+
+			<MOUSEFLAGS_DEFAULT_IM>LeftSingle+WheelUp+WheelDown</MOUSEFLAGS_DEFAULT_IM>
+			<MOUSEFLAGS_DRAG_IM>#DragFlags#</MOUSEFLAGS_DRAG_IM>
+			<DISABLE_INTERACTION_LOCK>False</DISABLE_INTERACTION_LOCK>
+
+			<ANIMREF_ID>0</ANIMREF_ID>
+			<ANIMCURSOR_MIN>0</ANIMCURSOR_MIN>
+			<ANIMCURSOR_MAX>1</ANIMCURSOR_MAX>
+
+			<CALLBACKCODE_DEFAULT_IM>#Callback#</CALLBACKCODE_DEFAULT_IM>
+			<CALLBACKCODE_DRAG_IM>#DragCallback#</CALLBACKCODE_DRAG_IM>
+			<DRAG_AXIS>#Axis#</DRAG_AXIS>
+		</UseTemplate>
+	</Template>
 </ModelBehaviors>

@@ -14,7 +14,7 @@
 				<Value>
 					<Units>Bool</Units>
 					<Code>0</Code>
-					<Init>#Init#</Init>
+					<Init>#Init# (&gt;B:#Name#_Preset_Set)</Init>
 				</Value>
 				<Inc>
 					<Code>0</Code>
